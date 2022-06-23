@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+/*
+ Есть набор тушенки. У тушенки есть название, год производства и срок годности.
+Написать запрос для получения всех просроченных банок тушенки.
+Чтобы не заморачиваться, можете думать, что считаем только года, без месяцев.
+ */
+
+namespace Task_55
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            DatabaseCannedProducts databaseCannedProducts = new DatabaseCannedProducts();
+            databaseCannedProducts.ShowAllCannedProducts();
+            databaseCannedProducts.FindExpiredProducts();
+            Console.ReadKey();
+        }
+    }
+
+    class DatabaseCannedProducts
+    {
+        private List<CannedProduct> _cannedProducts = new List<CannedProduct>();
+        private int _inspectionYear;
+
+        public DatabaseCannedProducts()
+        {
+            _inspectionYear = 2022;
+            _cannedProducts.Add(new CannedProduct("Из говядины", 2018, 4));
+            _cannedProducts.Add(new CannedProduct("Из свинины", 2020, 4));
+            _cannedProducts.Add(new CannedProduct("Из птицы", 2019, 3));
+            _cannedProducts.Add(new CannedProduct("Из индейки", 2018, 3));
+            _cannedProducts.Add(new CannedProduct("Из баранины", 2018, 4));
+            _cannedProducts.Add(new CannedProduct("Из конины", 2016, 4));
+            _cannedProducts.Add(new CannedProduct("Из утки", 2018, 3));
+            _cannedProducts.Add(new CannedProduct("Из кролика", 2020, 3));
+            _cannedProducts.Add(new CannedProduct("Мясное ассорти", 2019, 2));
+        }
+
+        public void FindExpiredProducts()
+        {
+            List<CannedProduct> filteredCannedProducts = new List<CannedProduct>();
+            Console.WriteLine($"\n\nНаличие просроченных банок в {_inspectionYear} году:\n");
+            filteredCannedProducts = _cannedProducts.Where(cannedProduct => (cannedProduct.YearOfProduction + cannedProduct.ShelfLife) < _inspectionYear).ToList();
+            ShowCannedProducts(filteredCannedProducts);
+        }
+
+        public void ShowAllCannedProducts()
+        {
+            Console.WriteLine("Список набора тушенки:\n");
+            ShowCannedProducts(_cannedProducts);
+        }
+
+        private void ShowCannedProducts(List<CannedProduct> cannedFood)
+        {
+            for (int i = 0; i < cannedFood.Count; i++)
+            {
+                Console.Write($"{i + 1}. ");
+                cannedFood[i].ShowInfoCannedProduct();
+            }
+        }
+    }
+
+    class CannedProduct
+    {
+        public string Name { get; private set; }
+        public int YearOfProduction { get; private set; }
+        public int ShelfLife { get; private set; }
+
+        public CannedProduct(string name, int yearOfProduction, int shelfLife)
+        {
+            Name = name;
+            YearOfProduction = yearOfProduction;
+            ShelfLife = shelfLife;
+        }
+
+        public void ShowInfoCannedProduct()
+        {
+            Console.WriteLine($"Название тушенки: {Name}. Год производства - {YearOfProduction} год. Срок годности - {ShelfLife} года.");
+        }
+    }
+}
